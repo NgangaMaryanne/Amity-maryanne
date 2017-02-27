@@ -48,13 +48,16 @@ class AmityTest(unittest.TestCase):
         self.assertTrue(len(self.amity.staff)==original_length)
 
     def test_create_room_one_room(self):
-        self.amity.office=[]
-        original_length=len(self.amity.office)
+        self.amity.offices=[]
+        original_length=len(self.amity.offices)
         self.amity.create_room("living_space", "narnia")
-        self.assertTrue(len(self.amity.office)>original_length)
+        self.assertTrue(len(self.amity.offices)>original_length)
 
     def test_create_room_more_rooms(self):
-        
+        self.amity.offices= []
+        original_length = len(self.amity.offices)
+        self.amity.create_room("living_space", "narnia","topaz","emerald")
+        self.assertTrue(len(self.amity.offices)>original_length)
 
 
 

@@ -68,11 +68,14 @@ class Amity(object):
             count =0
             argv = list(argv)
             all_rooms = self.offices + self.living_spaces
+            all_room_names=[]
+            for r in all_rooms:
+                all_room_names.append(r["name"])
             office_dict={}
             living_dict = {}
             if argv ==[]:
                 if isinstance(room_type, str):
-                    if isinstance(name, str):
+                    if isinstance(name, str) and name not in all_room_names:
                         if room_type == "living_space":
                             living_dict["name"]=name
                             living_dict["max_numbers"]=4
@@ -91,14 +94,14 @@ class Amity(object):
                     print("Room type should be a string.")
             else:
                 if isinstance(room_type, str):
-                    if isinstance(name, str):
+                    if isinstance(name, str) and name not in all_room_names:
                         if room_type == "living_space":
                             living_dict["name"]=name
                             living_dict["max_numbers"]=4
                             living_dict["no_of_members"]=0
                             self.living_spaces.append(living_dict)
                             for arg in argv:
-                                if isinstance(arg, str):
+                                if isinstance(arg, str) and arg not in all_room_names:
                                     living_dict={}
                                     living_dict["name"]=arg
                                     living_dict["max_numbers"]=4
@@ -113,7 +116,7 @@ class Amity(object):
                             office_dict["no_of_members"]=0
                             self.offices.append(office_dict)
                             for arg in argv:
-                                if isinstance(arg, str):
+                                if isinstance(arg, str) and arg not in all_room_names:
                                     office_dict={}
                                     office_dict["name"]=arg
                                     office_dict["max_numbers"]=6
@@ -173,14 +176,14 @@ a.add_person([], "Wambui", "F", 6)
 
 
 a.create_room("sitting_room", "narnia")
-a.create_room("office", "narnia", "hogwarts","platform", 8)
+a.create_room("office", "narnia", "hogwarts","platform")
 a.create_room("living_space", "ruby")
 
 a.create_room(1, "narnia")
 a.create_room("office", 1)
 a.create_room("living_space", [])
 a.create_room("living_space", "emerald", "diamond", "quartz", 4)
-a.create_room("living_space", "topaz")
+a.create_room("living_space", "topaz", "ruby", "platform")
 print(a.staff)
 print(a.fellows)
 print(a.living_spaces)

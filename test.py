@@ -31,8 +31,7 @@ class AmityTest(unittest.TestCase):
     def test_add_person_takes_either_role_of_staff_or_fellow(self):
         self.amity.staff = []
         original_length = len(self.amity.staff)
-        with self.assertRaises(ValueError):
-            self.amity.add_person("harry", "kimani", [])
+        self.assertEqual(self.amity.add_person("harry", "kimani", 2), "Please enter valid role.")
 
     def test_add_person_takes_either_yes_or_no_for_wants_accomodaton(self):
         self.amity.fellows = []
@@ -70,8 +69,8 @@ class AmityTest(unittest.TestCase):
     def test_create_room_only_takes_strings_as_room_names(self):
         self.assertEqual(self.amity.create_room("office", 1, 2), "Please enter valid room names.")
 
-    def test_allocate_office(self):
-        pass
+    # def test_allocate_office(self):
+    #     pass
     def test_allocate_living_space_works(self):
         self.amity.living_spaces = [
             {"name": "emerald", "no_of_members": 1, "max_members": 4}]

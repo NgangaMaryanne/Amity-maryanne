@@ -16,7 +16,7 @@ class Amity(object):
         self.office_allocations = office_allocations
         self.living_space_allocations = living_space_allocations
         self.people_counter = people_counter
-
+    #adds a person as either staff or fellow to amity.
     def add_person(self, firstname, lastname, role, wants_accomodation="N"):
         try:
             wants_accomodation_options = ["Yes", "N", "Y" "No", None]
@@ -89,7 +89,7 @@ class Amity(object):
 
         except():
             return "Please try again"
-
+    # creates rooms in amity. can create either one or more rooms.
     def create_room(self, room_type, name, *argv):
         try:
             argv = list(argv)
@@ -152,7 +152,7 @@ class Amity(object):
 
         except():
             print("Failed.")
-
+    #allocates a person an office. called automatically by the add_person(functions.)
     def allocate_office(self, id):
         error_message = "N/A"
         office =next((room for room in self.offices if room["no_of_members"]<room["max_members"]), error_message)
@@ -163,7 +163,7 @@ class Amity(object):
             print("No available office rooms.")
             return False
 
-
+    #allocates living space to fellows. returns an error if person is staff.
     def allocate_living_space(self, person_id):
         error_message = "N/A"
         living_space =next((room for room in self.living_spaces if room["no_of_members"]<room["max_members"]), error_message)
@@ -193,6 +193,7 @@ class Amity(object):
             return ""
             
         return this_room
+    #gets a person ie tells whether the person is a fellow or staff and gives the dictionaty containing the persons information.
 
     def get_person(self, person_id):
         fellow_ids = []
@@ -227,7 +228,7 @@ class Amity(object):
             return "Person id is an integer. refer to fellow or staff list."
 
 
-
+    #Reallocates people to rooms.
 
     def reallocate_room(self, person_id, room_name):
         office_names =[]
@@ -310,14 +311,7 @@ class Amity(object):
                     Print("No available rooms.")
 
 
-
-
-                
-
-
-
-
-
+    # adds people from a text file to the system.
     def load_people(self, text_file):
         text_file = str(text_file)
         with open(text_file, "r") as f:

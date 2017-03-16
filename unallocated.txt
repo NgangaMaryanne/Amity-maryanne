@@ -1,0 +1,13 @@
+PEOPLE WITH NO OFFICES
+	9, Daniel Sumba
+	10, Upendo {}
+	12, Olive Mugendi
+	7, Didah Ojwang
+	8, Maryanne Nganga
+	11, MIlicent Njuguna
+FELLOWS WITH NO LIVING SPACE:
+	1, jane Ngugi
+	6, Eugene Liyai
+	9, Daniel Sumba
+	10, Upendo {}
+	12, Olive Mugendi

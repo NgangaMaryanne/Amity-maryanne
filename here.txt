@@ -1,0 +1,21 @@
+OFFICE ALLOCATIONS
+	PLATFORM
+		1, jane Ngugi
+		4, moni wae
+		5, njeri githinji
+		6, Eugene Liyai
+	HOGWARTS
+		7, Didah Ojwang
+		8, Maryanne Nganga
+		9, Daniel Sumba
+		10, Upendo {}
+		11, MIlicent Njuguna
+		12, Olive Mugendi
+	MOMBASA
+		2, jake Kimani
+		3, joyce wangare
+LIVING SPACES ALLOCATIONS
+	DIAMOND 
+		10, Upendo {}
+		6, Eugene Liyai
+	EMERALD 

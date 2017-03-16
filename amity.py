@@ -299,8 +299,8 @@ class Amity(object):
                     error_message = "N/A"
                     new_room=next((room for room in self.offices if room["max_members"] > room["no_of_members"] and room["name"] != current_room_name), error_message)
                     if new_room != error_message:
-                        if new_room["name"] in allocated_office_names:
-                            self.office_allocations[new_room["name"]].append(person)
+                        if new_room in allocated_office_names:
+                            self.office_allocations[new_room].append(person)
                             self.office_allocations[current_room_name].remove(person)
                         else:
                             self.office_allocations[new_room] = [person]
@@ -377,6 +377,7 @@ class Amity(object):
             else:
                 print("You are trying to allocate staff living space. Staff cannot get living space.")
 
+
     #loads people from a txt file.
     def load_people(self, text_file):
         text_file = str(text_file)
@@ -446,50 +447,4 @@ class Amity(object):
 
     def load_state(self):
         pass
-
-a = Amity()
-#a.create_room(1, "narnia")
-a.create_room("office", "platform")
-
-a.create_room("office", "hogwarts")
-#a.create_room("office", "hogwarts")
-# # a.create_room("living_space", [])
-a.create_room("living_space", "emerald", "diamond", "quartz", 4)
-# # a.create_room("living_space", "topaz", "ruby", "platform")
-# # a.create_room("sitting_room", "narnia")
-# # a.create_room("office", "narnia", "hogwarts", "platform")
-# a.create_room("living_space", "ruby")
-# a.create_room("living_space", "topaz")
-
-
-#a.add_person("maryanne", "Nganga", "fellow", "Y")
-a.add_person("jane", "Ngugi", "fellow")
-a.add_person("jake", "Kimani", "staff", "Y")
-a.add_person("joyce", "wangare", "staff")
-a.add_person("moni", "wae", "staff")
-a.add_person("njeri", "githinji", "staff")
-# # a.add_person("gladys", "wamaitha", "staff")
-# a.add_person("kagiri", "ma", "staff")
-# a.add_person([], "Wambui", "F", 6)
-#a.reallocate_room(, "topaz")
-
-# #a.save_state()
-
-a.load_people("sample.txt")
-
-
-
-
-# #print(a.get_room("topaz"))
-# #print(a.get_person(1))
-a.print_allocations()
-a.create_room("office", "mombasa")
-a.reallocate_room(13, "mombasa")
-a.reallocate_room(3, "mombasa")
-a.reallocate_room(10, "diamond")
-a.reallocate_room(6, "diamond")
-a.print_allocations()
-
-
-a.print_allocations("allocations.txt")
-
+        

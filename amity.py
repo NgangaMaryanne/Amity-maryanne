@@ -430,11 +430,62 @@ class Amity(object):
                         f.write("\t\t{0}, {1}\n" .format(person["person_id"], person["name"]))
                 f.close()
                 print("allocations saved into: {0}" .format (textfile))
+        else:
+            print("Please input corrent name of textfile eg: allocations.txt")
 
 
-    def print_unallocations(self):
-        pass
+    def print_unallocated(self, *args):
+        """Prints people that have not been allocated to rooms.
+            Specifying a text file saves the un allocated to the text file
+            """
+        # Find people with no offices
+        args = list(args)
+        all_people = self.fellows +self.staff
+        allocated_people = []
+        allocated_fellows = []
+        if len(args) ==0: 
+            print("PEOPLE WITH NO OFFICES")
+            for room, people in self.office_allocations.items():
+                for person in people:
+                    allocated_people.append(person)
+            for person in all_people:
+                if person not in allocated_people:
+                    print(person["person_id"], person["name"])
 
+            print("FELLOWS WITH NO LIVING SPACE:")
+            for room, people in self.living_space_allocations.items():
+                for person in people:
+                    allocated_fellows.append(person)
+            for fellow in self.fellows:
+                if fellow not in allocated_fellows:
+                    print(fellow["person_id"], fellow["name"])
+
+        elif len(args)==1:
+            for arg in args:
+                text_file = str(arg)
+            with open(text_file, "w") as f:
+                f.write("PEOPLE WITH NO OFFICES\n")
+                for room, people in self.office_allocations.items():
+                    for person in people:
+                        allocated_people.append(person)
+                for person in all_people:
+                    if person not in allocated_people:
+                        f.write("\t{0}, {1}\n".format(person["person_id"], person["name"]))
+
+                f.write("FELLOWS WITH NO LIVING SPACE:\n")
+                for room, people in self.living_space_allocations.items():
+                    for person in people:
+                        allocated_fellows.append(person)
+                for fellow in self.fellows:
+                    if fellow not in allocated_fellows:
+                        f.write("\t{0}, {1}\n".format(fellow["person_id"], fellow["name"]))
+            print("unallocated people saved to {0}" .format(text_file))
+        else:
+            print("Please input valid text file: eg unallocated.txt")
+
+
+
+        
     def print_room(self):
         pass
 
@@ -447,4 +498,3 @@ class Amity(object):
 
     def load_state(self):
         pass
-        

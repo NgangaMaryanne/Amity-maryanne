@@ -7,7 +7,6 @@ import sqlite3
 
 class Amity(object):
     
-
     def __init__(self, offices=[], living_spaces=[], fellows=[], staff=[],office_allocations = {},living_space_allocations = {}, people_counter=0):
         self.offices = offices
         self.living_spaces = living_spaces
@@ -16,13 +15,12 @@ class Amity(object):
         self.office_allocations = office_allocations
         self.living_space_allocations = living_space_allocations
         self.people_counter = people_counter
-    #adds a person as either staff or fellow to amity.
+
+    #adds people as either staff or fellows to amity
     def add_person(self, firstname, lastname, role, wants_accomodation="N"):
         try:
             wants_accomodation_options = ["Yes", "N", "Y" "No", None]
-            if type(firstname) != str or type(lastname) != str:
-                print("Please enter valid names.")
-            else:
+            if isinstance(lastname, str) and isinstance(firstname, str):
                 if role.lower() in ("fellow", "f"):
                     self.people_counter = self.people_counter +1
                     Fellow.person_id = self.people_counter
@@ -80,16 +78,18 @@ class Amity(object):
                     else:
                         print("No available rooms.")
 
-                    if wants_accomodation == "yes" or wants_accomodation == "Y":
+                    if wants_accomodation.lower() in ["yes", "y"]:
                         return "Staff does not get living space. staff created with no living space."
-                    elif wants_accomodation == "no" or wants_accomodation == "N":
+                    elif wants_accomodation.lower() in ["no", "n"]:
                         pass
                     else:
                         print("invalid accomodation")
-
+            else:
+                print("please input valid names.")
         except():
             return "Please try again"
-    # creates rooms in amity. can create either one or more rooms.
+
+    #creates rooms in amity. a user can add one or more people.
     def create_room(self, room_type, name, *argv):
         try:
             argv = list(argv)
@@ -152,7 +152,8 @@ class Amity(object):
 
         except():
             print("Failed.")
-    #allocates a person an office. called automatically by the add_person(functions.)
+
+    #allocates offices to people. called automatically by add_person()
     def allocate_office(self, id):
         error_message = "N/A"
         office =next((room for room in self.offices if room["no_of_members"]<room["max_members"]), error_message)
@@ -163,7 +164,7 @@ class Amity(object):
             print("No available office rooms.")
             return False
 
-    #allocates living space to fellows. returns an error if person is staff.
+    #allocates living space to fellows.
     def allocate_living_space(self, person_id):
         error_message = "N/A"
         living_space =next((room for room in self.living_spaces if room["no_of_members"]<room["max_members"]), error_message)
@@ -193,8 +194,8 @@ class Amity(object):
             return ""
             
         return this_room
-    #gets a person ie tells whether the person is a fellow or staff and gives the dictionaty containing the persons information.
 
+    #gets person and tells whether person is staff or fellow.
     def get_person(self, person_id):
         fellow_ids = []
         staff_ids = []
@@ -227,91 +228,156 @@ class Amity(object):
         else:
             return "Person id is an integer. refer to fellow or staff list."
 
+    #gets persons current office.
+    def get_current_office(self, person_id):
+        person = self.get_person(person_id)["data"]
+        all_assigned_people = []
+        for room, people in self.office_allocations.items():
+            for this_person in people:
+                all_assigned_people.append(this_person)
 
-    #Reallocates people to rooms.
-
-    def reallocate_room(self, person_id, room_name):
-        office_names =[]
-        living_space_names = []
-        all_people_id = []
-        allocated_office_names = [key for key in self.office_allocations]
-        allocated_living_space_names = [key for key in self.living_space_allocations]
-        for room in self.offices:
-            office_names.append(room["name"])
-
-        for room in self.living_spaces:
-            living_space_names.append(room["name"])
-        if str(room_name) in office_names:
-            person = self.get_person(person_id)["data"]
-            for key, value in self.office_allocations.items():
-                for person in value:
-                    if person["person_id"] == person_id:
-                        current_room_name = key
+        if person in all_assigned_people:
+            for room, people in self.office_allocations.items():
+                for p in people:
+                    if p == person:
+                        current_office = self.get_room(room)["data"]
                         break
-            current_room = [room for room in self.offices if room["name"]== current_room_name]
+        else:
+            print("Person has no current office.")
+            current_office = None
+        return current_office
 
-            print("{0} is in office: {1}" .format(person["name"], current_room_name))
-            new_room = self.get_room(room_name)["data"]
-            if new_room["no_of_members"] < new_room["max_members"]:
-                if new_room in allocated_office_names:
-                    self.office_allocations[new_room].append(person)
-                else:
-                    self.office_allocations[new_room["name"]] = [person]
-                self.office_allocations[current_room_name].remove(person)
-                print("{0}, reallocated to {1}" .format(person["name"], new_room["name"]))
-            else:
-                error_message = "N/A"
-                new_room=next((room for room in self.offices if room["max_members"] > room["no_of_members"] and room["name"] != current_room_name), error_message)
-                if new_room != error_message:
-                    if new_room in allocated_office_names:
-                        self.office_allocations[new_room].append(person)
+    #gets a persons current living space.
+    def get_current_living_space(self, person_id):
+        person = self.get_person(person_id)["data"]
+        all_assigned_fellows =[]
+        for room, people in self.living_space_allocations.items():
+            for p in people:
+                all_assigned_fellows.append(p)
+        if person in all_assigned_fellows:
+            for room, people in self.living_space_allocations.items():
+                for this_person in people:
+                    if this_person == person:
+                        current_living_space = self.get_room(room)["data"]
+                        break
+            return current_living_space
+        else:
+             print("person has no current living space.")
+             return None
+
+    #reallocates person from one room to another.
+    def reallocate_room(self, person_id, room_name):
+        person = self.get_person(person_id)["data"]
+        person_role = self.get_person(person_id)["role"]
+        allocated_office_names = [room for room in self.office_allocations]
+        allocated_living_space_names = [room for room in self.living_space_allocations]
+
+        all_assigned_fellows =[]
+        for room, people in self.living_space_allocations.items():
+            for p in people:
+                all_assigned_fellows.append(p)
+        all_assigned_people = []
+        for room, people in self.office_allocations.items():
+            for this_person in people:
+                all_assigned_people.append(this_person)
+        allocated_people =  all_assigned_people + all_assigned_fellows
+        new_room_type = self.get_room(room_name)["room_type"]
+        new_room = self.get_room(room_name)["data"]
+        if new_room_type == "office":
+            if person in all_assigned_people:
+                current_office = self.get_current_office(person_id)
+                if new_room["max_members"] > new_room["no_of_members"]:
+                    if new_room["name"] in allocated_office_names:
+                        self.office_allocations[new_room["name"]].append(person)
+                        self.office_allocations[current_office["name"]].remove(person)
                     else:
-                        self.office_allocations[new_room] = [person]
-
-                    self.office_allocations[current_room_name].remove(person)
+                        self.office_allocations[new_room["name"]] = [person]
+                        self.office_allocations[current_office["name"]].remove(person)
+                    
                     print("{0}, reallocated to {1}" .format(person["name"], new_room["name"]))
                 else:
-                    Print("No available rooms.")
+                    error_message = "N/A"
+                    new_room=next((room for room in self.offices if room["max_members"] > room["no_of_members"] and room["name"] != current_room_name), error_message)
+                    if new_room != error_message:
+                        if new_room["name"] in allocated_office_names:
+                            self.office_allocations[new_room["name"]].append(person)
+                            self.office_allocations[current_room_name].remove(person)
+                        else:
+                            self.office_allocations[new_room] = [person]
+                            self.office_allocations[current_room_name].remove(person)
 
-
-        elif str(room_name) in living_space_names:
-            person = self.get_person(person_id)
-            if person["role"].lower() in ("staff", "s"):
-                print("Staff cannot have a living space.")
-            else:
-                person = person["data"]
-                for key, value in self.living_space_allocations.items():
-                    for person in value:
-                        if person["person_id"] == person_id:
-                            current_room_name = key
-                            break
-            current_room = [room for room in self.living_spaces if room["name"]== current_room_name]
-
-            print("{0} is in living space: {1}" .format(person["name"], current_room_name))
-            new_room = self.get_room(room_name)["data"]
-            if new_room["no_of_members"] < new_room["max_members"]:
-                if new_room in allocated_living_space_names:
-                    self.living_space_allocations[new_room].append(person)
-                else:
-                    self.living_space_allocations[new_room["name"]] = [person]
-                self.living_space_allocations[current_room_name].remove(person)
-                print("{0}, reallocated to {1}" .format(person["name"], new_room["name"]))
-            else:
-                error_message = "N/A"
-                new_room=next((room for room in self.living_spaces if room["max_members"] > room["no_of_members"] and room["name"] != current_room_name), error_message)
-                if new_room != error_message:
-                    if new_room in allocated_living_space_names:
-                        self.living_space_allocations[new_room].append(person)
+                        print("{0}, reallocated to {1}" .format(person["name"], new_room["name"]))
                     else:
-                        self.living_space_allocations[new_room] = [person]
-
-                    self.living_space_allocations[current_room_name].remove(person)
-                    print("{0}, reallocated to {1}" .format(person["name"], new_room["name"]))
+                        Print("No available rooms.")
+            else:
+                if new_room["max_members"]> new_room["no_of_members"]:
+                    if new_room["name"] in allocated_office_names:
+                        self.office_allocations[new_room["name"]].append(person)
+                    else:
+                        self.office_allocations[new_room["name"]] = [person]
+                    print("{0}, allocated to {1}" .format(person["name"], new_room["name"]))
                 else:
-                    Print("No available rooms.")
+                    error_message = "N/A"
+                    new_room=next((room for room in self.offices if room["max_members"] > room["no_of_members"] and room["name"] != current_room_name), error_message)
+                    if new_room != error_message:
+                        if new_room["name"] in allocated_office_names:
+                            self.office_allocations[new_room["name"]].append(person)
+                        else:
+                            self.office_allocations[new_room["name"]] = [person]
 
+                        print("{0}, reallocated to {1}" .format(person["name"], new_room["name"]))
+                    else:
+                        Print("No available rooms.")
 
-    # adds people from a text file to the system.
+        #if room is living space
+        else:
+            if person_role == "fellow":
+                if person in all_assigned_fellows :
+                    current_living_space= self.get_current_living_space(person_id)
+                    if new_room["max_members"]> new_room["no_of_members"]:
+                        if new_room["name"] in allocated_living_space_names:
+                            self.living_space_allocations[new_room["name"]].append(person)
+                        else:
+                            self.living_space_allocations[new_room["name"]] = [person]
+                        self.living_space_allocations[current_living_space["name"]].remove(person)
+                        print("{0}, reallocated to {1}" .format(person["name"], new_room["name"]))
+                    else:
+                        error_message = "N/A"
+                        new_room=next((room for room in self.living_spaces if room["max_members"] > room["no_of_members"] and room["name"] != current_room_name), error_message)
+                        if new_room != error_message:
+                            if new_room["name"] in allocated_living_space_names:
+                                self.living_space_allocations[new_room["name"]].append(person)
+                            else:
+                                self.living_space_allocations[new_room["name"]] = [person]
+
+                            self.living_space_allocations[current_living_space["name"]].remove(person)
+                            print("{0}, reallocated to {1}" .format(person["name"], new_room["name"]))
+                        else:
+                            Print("No available rooms.")
+
+                else:
+                    if new_room["max_members"]> new_room["no_of_members"]:
+                        if new_room["name"] in allocated_living_space_names:
+                            self.living_space_allocations[new_room["name"]].append(person)
+                        else:
+                            self.living_space_allocations[new_room["name"]] = [person]
+                        print("{0}, allocated to {1}" .format(person["name"], new_room["name"]))
+                    else:
+                        error_message = "N/A"
+                        new_room=next((room for room in self.living_spaces if room["max_members"] > room["no_of_members"] and room["name"] != current_room_name), error_message)
+                        if new_room != error_message:
+                            if new_room["name"] in allocated_living_space_names:
+                                self.living_space_allocations[new_room["name"]].append(person)
+                            else:
+                                self.living_space_allocations[new_room["name"]] = [person]
+
+                            print("{0}, reallocated to {1}" .format(person["name"], new_room["name"]))
+                        else:
+                            Print("No available rooms.")
+            else:
+                print("You are trying to allocate staff living space. Staff cannot get living space.")
+
+    #loads people from a txt file.
     def load_people(self, text_file):
         text_file = str(text_file)
         with open(text_file, "r") as f:
@@ -325,11 +391,45 @@ class Amity(object):
                 else:
                     print("Please check the text file, some values are missing.")
 
-    
-        
+    #prints all allocated people and the rooms they have been allocated to.
+    #specifying file name saves allocations to the specified file.
+    def print_allocations(self, *args):
+        #print office allocations
+        args = list(args)
+        if len(args)==0:
+            print("OFFICE ALLOCATIONS")
+            for room, people in self.office_allocations.items():
+                print(room.upper())
+                for person in people:
+                    print(person["person_id"], person["name"])
+            #print living space and people in the living space
+            print("LIVING SPACES")
+            for room, people in self.living_space_allocations.items():
+                print(room.upper())
+                for person in people:
+                    print(person["person_id"], person["name"])
+        elif len(args) == 1:
+            for arg in args:
+                textfile = str(arg)
+            with open(textfile, "w") as f:
+                f.write("OFFICE ALLOCATIONS\n")
+                for room, people in self.office_allocations.items():
+                    room = room.upper()
+                    f.write("\t{0}\n" .format(room.upper()))
+                    for person in people:
+                        person_id = str(person["person_id"])
+                        person_name = str(person["name"])
+                        this_person = person_id + person_name
+                        f.write("\t\t{0}, {1}\n".format(person_id, person_name))
 
-    def print_allocations(self):
-        pass
+                f.write("LIVING SPACES ALLOCATIONS\n")
+                for room, people in self.living_space_allocations.items():
+                    f.write("\t{0} \n" .format(room.upper()))
+                    for person in people:
+                        f.write("\t\t{0}, {1}\n" .format(person["person_id"], person["name"]))
+                f.close()
+                print("allocations saved into: {0}" .format (textfile))
+
 
     def print_unallocations(self):
         pass
@@ -348,11 +448,13 @@ class Amity(object):
         pass
 
 a = Amity()
-# a.create_room(1, "narnia")
-# a.create_room("office", "platform")
-# a.create_room("office", "hogwarts")
+#a.create_room(1, "narnia")
+a.create_room("office", "platform")
+
+a.create_room("office", "hogwarts")
+#a.create_room("office", "hogwarts")
 # # a.create_room("living_space", [])
-# # a.create_room("living_space", "emerald", "diamond", "quartz", 4)
+a.create_room("living_space", "emerald", "diamond", "quartz", 4)
 # # a.create_room("living_space", "topaz", "ruby", "platform")
 # # a.create_room("sitting_room", "narnia")
 # # a.create_room("office", "narnia", "hogwarts", "platform")
@@ -360,33 +462,34 @@ a = Amity()
 # a.create_room("living_space", "topaz")
 
 
-# a.add_person("maryanne", "Nganga", "fellow", "Y")
-# a.add_person("jane", "Ngugi", "fellow")
-# a.add_person("jake", "Kimani", "staff", "Y")
-# a.add_person("joyce", "wangare", "staff")
-# # a.add_person("moni", "wae", "staff")
-# # a.add_person("njeri", "githinji", "staff")
+#a.add_person("maryanne", "Nganga", "fellow", "Y")
+a.add_person("jane", "Ngugi", "fellow")
+a.add_person("jake", "Kimani", "staff", "Y")
+a.add_person("joyce", "wangare", "staff")
+a.add_person("moni", "wae", "staff")
+a.add_person("njeri", "githinji", "staff")
 # # a.add_person("gladys", "wamaitha", "staff")
 # a.add_person("kagiri", "ma", "staff")
 # a.add_person([], "Wambui", "F", 6)
-# a.reallocate_room(1, "topaz")
+#a.reallocate_room(, "topaz")
 
-# # a.reallocate_living_space("F1", "ruby")
 # #a.save_state()
 
 a.load_people("sample.txt")
 
 
+
+
 # #print(a.get_room("topaz"))
 # #print(a.get_person(1))
-print("Staff: " , a.staff)
-# print()
-print("Fellows " , a.fellows)
-# print()
-# print("Living spaces " , a.living_spaces)
-# print()
-# print("Offices " , a.offices)
-# print()
-# print("Office allocations " , a.office_allocations)
-# print()
-# print("Living space allocations " , a.living_space_allocations)
+a.print_allocations()
+a.create_room("office", "mombasa")
+a.reallocate_room(13, "mombasa")
+a.reallocate_room(3, "mombasa")
+a.reallocate_room(10, "diamond")
+a.reallocate_room(6, "diamond")
+a.print_allocations()
+
+
+a.print_allocations("allocations.txt")
+

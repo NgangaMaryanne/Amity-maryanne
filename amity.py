@@ -529,8 +529,33 @@ class Amity(object):
         else:
             print("Please input valid text file: eg unallocated")
 
-    def print_room(self):
-        pass
+    
+    def print_room(self, room_name):
+        if isinstance(room_name, str):
+            all_rooms =[]
+            allocated_office_names =[room for room in self.office_allocations]
+            allocated_living_space_names =[room for room in self.living_space_allocations]
+            for room in self.offices:
+                all_rooms.append(room["name"])
+            for room in self.living_spaces:
+                all_rooms.append(room["name"])
+            if room_name in all_rooms:
+                if room_name in allocated_office_names:
+                    print(room_name.upper())
+                    occupants = self.office_allocations.get(room_name)
+                    for occupant in occupants:
+                        print(occupant["person_id"], occupant["name"])
+                elif room_name in allocated_living_space_names:
+                    print(room_name.upper())
+                    occupants = self.living_space_allocations.get(room_name)
+                    for occupant in occupants:
+                        print(occupant["person_id"], occupant["name"])
+                else:
+                    print("Room is currently vacant.")
+            else:
+                print("Room does not exist.")
+        else:
+            print("Please enter valid room name.")
 
     def save_state(self):
         conn = sqlite3.connect("my_db")

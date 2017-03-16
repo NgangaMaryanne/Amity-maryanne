@@ -16,7 +16,7 @@ class Amity(object):
         self.office_allocations = office_allocations
         self.living_space_allocations = living_space_allocations
         self.people_counter = people_counter
-
+    #adds a person as either staff or fellow to amity.
     def add_person(self, firstname, lastname, role, wants_accomodation="N"):
         try:
             wants_accomodation_options = ["Yes", "N", "Y" "No", None]
@@ -89,7 +89,7 @@ class Amity(object):
 
         except():
             return "Please try again"
-
+    # creates rooms in amity. can create either one or more rooms.
     def create_room(self, room_type, name, *argv):
         try:
             argv = list(argv)
@@ -152,7 +152,7 @@ class Amity(object):
 
         except():
             print("Failed.")
-
+    #allocates a person an office. called automatically by the add_person(functions.)
     def allocate_office(self, id):
         error_message = "N/A"
         office =next((room for room in self.offices if room["no_of_members"]<room["max_members"]), error_message)
@@ -163,7 +163,7 @@ class Amity(object):
             print("No available office rooms.")
             return False
 
-
+    #allocates living space to fellows. returns an error if person is staff.
     def allocate_living_space(self, person_id):
         error_message = "N/A"
         living_space =next((room for room in self.living_spaces if room["no_of_members"]<room["max_members"]), error_message)
@@ -193,6 +193,7 @@ class Amity(object):
             return ""
             
         return this_room
+    #gets a person ie tells whether the person is a fellow or staff and gives the dictionaty containing the persons information.
 
     def get_person(self, person_id):
         fellow_ids = []
@@ -227,7 +228,7 @@ class Amity(object):
             return "Person id is an integer. refer to fellow or staff list."
 
 
-
+    #Reallocates people to rooms.
 
     def reallocate_room(self, person_id, room_name):
         office_names =[]
@@ -310,16 +311,22 @@ class Amity(object):
                     Print("No available rooms.")
 
 
+    # adds people from a text file to the system.
+    def load_people(self, text_file):
+        text_file = str(text_file)
+        with open(text_file, "r") as f:
+            people = f.read().splitlines()
+            for person in people:
+                person = person.split(" ")
+                if len(person)==4:
+                    self.add_person(person[0], person[1],person[2],person[3])
+                elif len(person)==3:
+                    self.add_person(person[0], person[1],person[2])
+                else:
+                    print("Please check the text file, some values are missing.")
 
-
-                
-
-
-
-
-
-    def load_people(self):
-        pass
+    
+        
 
     def print_allocations(self):
         pass
@@ -342,44 +349,44 @@ class Amity(object):
 
 a = Amity()
 # a.create_room(1, "narnia")
-a.create_room("office", "platform")
-a.create_room("office", "hogwarts")
-# a.create_room("living_space", [])
-# a.create_room("living_space", "emerald", "diamond", "quartz", 4)
-# a.create_room("living_space", "topaz", "ruby", "platform")
-# a.create_room("sitting_room", "narnia")
-# a.create_room("office", "narnia", "hogwarts", "platform")
-a.create_room("living_space", "ruby")
-a.create_room("living_space", "topaz")
+# a.create_room("office", "platform")
+# a.create_room("office", "hogwarts")
+# # a.create_room("living_space", [])
+# # a.create_room("living_space", "emerald", "diamond", "quartz", 4)
+# # a.create_room("living_space", "topaz", "ruby", "platform")
+# # a.create_room("sitting_room", "narnia")
+# # a.create_room("office", "narnia", "hogwarts", "platform")
+# a.create_room("living_space", "ruby")
+# a.create_room("living_space", "topaz")
 
 
-a.add_person("maryanne", "Nganga", "fellow", "Y")
-a.add_person("jane", "Ngugi", "fellow")
-a.add_person("jake", "Kimani", "staff", "Y")
-a.add_person("joyce", "wangare", "staff")
-# a.add_person("moni", "wae", "staff")
-# a.add_person("njeri", "githinji", "staff")
-# a.add_person("gladys", "wamaitha", "staff")
-a.add_person("kagiri", "ma", "staff")
-a.add_person([], "Wambui", "F", 6)
-a.reallocate_room(1, "topaz")
+# a.add_person("maryanne", "Nganga", "fellow", "Y")
+# a.add_person("jane", "Ngugi", "fellow")
+# a.add_person("jake", "Kimani", "staff", "Y")
+# a.add_person("joyce", "wangare", "staff")
+# # a.add_person("moni", "wae", "staff")
+# # a.add_person("njeri", "githinji", "staff")
+# # a.add_person("gladys", "wamaitha", "staff")
+# a.add_person("kagiri", "ma", "staff")
+# a.add_person([], "Wambui", "F", 6)
+# a.reallocate_room(1, "topaz")
 
-# a.reallocate_living_space("F1", "ruby")
-#a.save_state()
+# # a.reallocate_living_space("F1", "ruby")
+# #a.save_state()
+
+a.load_people("sample.txt")
 
 
-
-
-#print(a.get_room("topaz"))
-#print(a.get_person(1))
+# #print(a.get_room("topaz"))
+# #print(a.get_person(1))
 print("Staff: " , a.staff)
-print()
+# print()
 print("Fellows " , a.fellows)
-print()
-print("Living spaces " , a.living_spaces)
-print()
-print("Offices " , a.offices)
-print()
-print("Office allocations " , a.office_allocations)
-print()
-print("Living space allocations " , a.living_space_allocations)
+# print()
+# print("Living spaces " , a.living_spaces)
+# print()
+# print("Offices " , a.offices)
+# print()
+# print("Office allocations " , a.office_allocations)
+# print()
+# print("Living space allocations " , a.living_space_allocations)

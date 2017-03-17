@@ -12,11 +12,11 @@ Usage:
     print_unallocated [-o <filename>]
     save_state [--db <dbname>]
     load_state <dbfile>
-    print_room <room_name>
-    print_fellows
-    print_staff
-    print_offices
-    print_living_spaces
+    list_room <room_name>
+    list_fellows
+    list_staff
+    list_offices
+    list_living_spaces
     delete_person <person_id>
     delete_room <room_name>
     amity (-i | --interactive)
@@ -139,24 +139,24 @@ class MyInteractive (cmd.Cmd):
 
 
     @docopt_cmd
-    def do_print_fellows(self, arg):
-      """Usage: print_fellows"""
-      self.amity.print_fellows()
+    def do_list_fellows(self, arg):
+      """Usage: list_fellows"""
+      self.amity.list_fellows()
 
     @docopt_cmd
-    def do_print_staff(self, arg):
-      """Usage: print_staff"""
-      self.amity.print_staff()
+    def do_list_staff(self, arg):
+      """Usage: list_staff"""
+      self.amity.list_staff()
 
     @docopt_cmd
-    def do_print_offices(self, arg):
-      """Usage: print_offices"""
-      self.amity.print_offices()
+    def do_list_offices(self, arg):
+      """Usage: list_offices"""
+      self.amity.list_offices()
 
     @docopt_cmd
-    def do_print_living_spaces(self, arg):
-      """Usage: print_living_spaces"""
-      self.amity.print_living_spaces()
+    def do_list_living_spaces(self, arg):
+      """Usage: list_living_spaces"""
+      self.amity.list_living_spaces()
 
     @docopt_cmd
     def do_delete_person(self, arg):

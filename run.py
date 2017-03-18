@@ -5,20 +5,20 @@ interactive command application.
 
 Usage:
     amity create_room (office | living_space ) <name>...
-    add_person <firstname> <lastname> <role> [<wants_accomodation>]
-    reallocate_room <person_id> <room_name>
-    load_people <filename>
-    print_allocations [-o <filename>]
-    print_unallocated [-o <filename>]
-    save_state [--db <dbname>]
-    load_state <dbfile>
-    list_room <room_name>
-    list_fellows
-    list_staff
-    list_offices
-    list_living_spaces
-    delete_person <person_id>
-    delete_room <room_name>
+    amity add_person <firstname> <lastname> <role> [<wants_accomodation>]
+    amity reallocate_room <person_id> <room_name>
+    amity load_people <filename>
+    amity print_allocations [-o <filename>]
+    amity print_unallocated [-o <filename>]
+    amity save_state [--db <dbname>]
+    amity load_state <dbfile>
+    amity print_room <room_name>
+    amity list_fellows
+    amity list_staff
+    amity list_offices
+    amity list_living_spaces
+    amity delete_person <person_id>
+    amity delete_room <room_name>
     amity (-i | --interactive)
     amity (-h | --help | --version)
 
@@ -34,6 +34,8 @@ import sys
 import cmd
 from docopt import docopt, DocoptExit
 from amity import Amity
+from termcolor import cprint
+from pyfiglet import figlet_format
 
 
 def docopt_cmd(func):
@@ -68,8 +70,37 @@ def docopt_cmd(func):
 
 
 class MyInteractive (cmd.Cmd):
-    intro = 'Welcome to my interactive program!' \
-        + ' (type help for a list of commands.)'
+
+    cprint("\n")
+    cprint(figlet_format("AMITY".center(10), font="block"),
+           "blue", attrs=["bold"])
+    def introduction():
+        cprint("\n")
+        cprint("ROOM ALLOCATION COMMANDS:".center(30), 'yellow')
+        cprint("\n")
+        cprint(
+            "1. create_room (office | living_space ) <name>...", 'yellow')
+        cprint(
+            "2. add_person <first_name> <last_name> (Fellow|Staff)"
+            "[<wants_accomodation>]".center(40), 'yellow')
+        cprint("3. reallocate_room <person_id> <room_name>".center(40), 'yellow')
+        cprint("4. load_people <filename>", 'yellow')
+        cprint("5. print_room <room_name>", 'yellow')
+        cprint("6. list_fellows", 'yellow')
+        cprint("7. list_staff", 'yellow')
+        cprint("8. list_offices", 'yellow')
+        cprint("9. list_living_spaces", 'yellow')
+        cprint("9. delete_person <person_id>", 'yellow')
+        cprint("9. delete_room <room_name>", 'yellow')
+
+        cprint("\n")
+        cprint("OTHER COMMANDS:".center(20), 'yellow')
+        cprint("\n")
+        cprint("1. help".center(10), 'yellow')
+        cprint("2. quit".center(10), 'yellow')
+        cprint("\n\n")
+
+    intro = introduction()
     prompt = '(Amity-->) '
     file = None
     amity = Amity()
@@ -131,6 +162,7 @@ class MyInteractive (cmd.Cmd):
         self.amity.save_state(arg['<dbname>'])
       else:
         self.amity.save_state("amitydb")
+        cprint("Data automatically saved to amitydb")
 
     @docopt_cmd
     def do_load_state(self, arg):

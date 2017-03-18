@@ -3,6 +3,7 @@ from living_space import LivingSpace
 from office import Office
 from staff import Staff
 import sqlite3
+from termcolor import cprint
 
 
 class Amity(object):
@@ -26,6 +27,7 @@ class Amity(object):
                     Fellow.person_id = self.people_counter
                     Fellow.name = firstname + " " + lastname
                     fellow = Fellow(Fellow.person_id, Fellow.name)
+                    cprint("{0} created" .format(Fellow.name ), 'blue')
                     office = self.allocate_office(Fellow.person_id)
 
                     allocated_room_names = []
@@ -38,10 +40,8 @@ class Amity(object):
                         else:
                             self.office_allocations[office] = [fellow.__dict__]
 
-                    else:
-                        pass
                     self.fellows.append(fellow.__dict__)
-                    print("{0} created" .format(Fellow.name ))
+                    
 
                     if wants_accomodation.lower() in ("yes", "y"):
                         living_space = self.allocate_living_space(
@@ -56,16 +56,12 @@ class Amity(object):
                             else:
                                 self.living_space_allocations[
                                     living_space] = [fellow.__dict__]
-
-                        else:
-                            pass
-
                 else:
                     Staff.name = firstname + " " + lastname
                     self.people_counter += 1
                     Staff.person_id = self.people_counter
                     staff = Staff(Staff.person_id, Staff.name)
-                    print("{0} created" .format(Staff.name))
+                    cprint("{0} created" .format(Staff.name),'blue')
                     self.staff.append(staff.__dict__)
                     office = self.allocate_office(Staff.person_id)
 
@@ -78,20 +74,12 @@ class Amity(object):
                                 office].append(staff.__dict__)
                         else:
                             self.office_allocations[office] = [staff.__dict__]
-
-                    else:
-                        pass
-
                     if wants_accomodation.lower() in ["yes", "y"]:
-                        return "Staff does not get living space. staff created with no living space."
-                    elif wants_accomodation.lower() in ["no", "n"]:
-                        pass
-                    else:
-                        print("invalid accomodation")
+                        cprint("Staff does not get living space. staff created with no living space.",'red')
             else:
-                print("please input valid names.")
+                cprint("please input valid names.", 'red')
         except():
-            return "Please try again"
+            cprint("Please try again", 'red')
 
     def create_room(self, room_type, rooms):
         """Creates rooms in amity. A user can add one or more people."""
@@ -100,7 +88,7 @@ class Amity(object):
         for r in all_rooms:
             all_room_names.append(r["name"].lower())
         if rooms == []:
-            print ("please input room types")
+            cprint("please input room types", 'red')
         else:
             if isinstance(room_type, str):
                 if room_type == "living_space":
@@ -111,10 +99,10 @@ class Amity(object):
                                 LivingSpace.living_space_name)
                             self.living_spaces.append(
                                 living_space.__dict__)
-                            print("{0} created" .format(LivingSpace.living_space_name))
+                            cprint("{0} created" .format(LivingSpace.living_space_name), 'blue')
                         else:
-                            print(
-                                "one of your living room names is not a string or it already exists. please try again.")
+                            cprint(
+                                "one of your living room names is not a string or it already exists. please try again.", 'red')
 
                 elif room_type == "office":
                     for room in rooms:
@@ -122,18 +110,15 @@ class Amity(object):
                             Office.office_name = room
                             office = Office(Office.office_name)
                             self.offices.append(office.__dict__)
-                            print("{0} created" .format(Office.office_name))
+                            cprint("{0} created" .format(Office.office_name), 'blue')
                             
                         else:
-                            print(
-                                "One of your office names is not a string or it already exists please retry.")
+                            cprint(
+                                "One of your office names is not a string or it already exists please retry.", 'red')
                 else:
-                    print("Please input a room type of either office or living space.")
+                    cprint("Please input a room type of either office or living space.", 'red')
             else:
-                print("Room type should be a string.")
-
-        print(self.offices)
-        print(self.living_spaces)
+                cprint("Room type should be a string.", 'red')
 
     def allocate_office(self, id):
         """Allocates offices to people. called automatically by add_person()."""
@@ -144,8 +129,7 @@ class Amity(object):
             office["no_of_members"] = office["no_of_members"]+1
             return office["name"]
         else:
-            print("No available office rooms.")
-            return False
+            cprint("No available office rooms.", 'red')
 
     def allocate_living_space(self, person_id):
         """Allocates living space to fellows."""
@@ -156,8 +140,7 @@ class Amity(object):
             living_space["no_of_members"] = living_space["no_of_members"]+1
             return living_space["name"]
         else:
-            print("No available living spaces")
-            return False
+            cprint("No available living spaces", 'red')
 
     def get_room(self, room_name):
         """ Gets room given room name and tells whether the room is an office or a
@@ -174,19 +157,20 @@ class Amity(object):
                 for room in all_rooms:
                     if room["name"].lower() == room_name:
                         break
-                        print("room does not exist.")
+                        cprint("room does not exist.", 'red')
                 if room["max_members"] == 4:
                     this_room["room_type"] = "living_space"
                     this_room["data"] = room
                 else:
                     this_room["room_type"] = "office"
                     this_room["data"] = room
+                return this_room
             else:
-                print("Room does not exist.")
+                cprint("Room does not exist.", 'red')
         else:
-            print("Enter valid room name.")
+            cprint("Enter valid room name.", 'red')
 
-        return this_room
+        
 
     def get_person(self, person_id):
         """Gets person and tells whether person is staff or fellow."""
@@ -218,9 +202,9 @@ class Amity(object):
                 this_staff["data"] = staff
                 return this_staff
             else:
-                return "The person ID does not exist please try again."
+                cprint("The person ID does not exist please try again.", 'red')
         else:
-            return "Person id is an integer. refer to fellow or staff list."
+            cprint("Person id is an integer. refer to fellow or staff list.", 'red')
 
     def get_current_office(self, person_id):
         """Gets persons current office."""
@@ -236,8 +220,9 @@ class Amity(object):
                     if p == person:
                         current_office = self.get_room(room)["data"]
                         break
+
         else:
-            print("Person has no current office.")
+            cprint("Person has no current office.")
             current_office = None
         return current_office
 
@@ -256,7 +241,7 @@ class Amity(object):
                         break
             return current_living_space
         else:
-            print("person has no current living space.")
+            cprint("person has no current living space.", 'red')
             return None
 
     def reallocate_room(self, person_id, room_name):
@@ -292,8 +277,8 @@ class Amity(object):
                         self.office_allocations[
                             current_office["name"]].remove(person)
 
-                    print("{0}, reallocated to {1}" .format(
-                        person["name"], new_room["name"]))
+                    cprint("{0}, reallocated to {1}" .format(
+                        person["name"], new_room["name"])), 'blue'
                 else:
                     error_message = "N/A"
                     new_room = next((room for room in self.offices if room["max_members"] > room[
@@ -308,10 +293,10 @@ class Amity(object):
                             self.office_allocations[
                                 current_room_name].remove(person)
 
-                        print("{0}, reallocated to {1}" .format(
+                        cprint("{0}, reallocated to {1}" .format(
                             person["name"], new_room["name"]))
                     else:
-                        Print("No available rooms.")
+                        cprint("No available rooms.")
             else:
                 if new_room["max_members"] > new_room["no_of_members"]:
                     if new_room["name"] in allocated_office_names:
@@ -319,7 +304,7 @@ class Amity(object):
                             new_room["name"]].append(person)
                     else:
                         self.office_allocations[new_room["name"]] = [person]
-                    print("{0}, allocated to {1}" .format(
+                    cprint("{0}, allocated to {1}" .format(
                         person["name"], new_room["name"]))
                 else:
                     error_message = "N/A"
@@ -333,10 +318,10 @@ class Amity(object):
                             self.office_allocations[
                                 new_room["name"]] = [person]
 
-                        print("{0}, reallocated to {1}" .format(
+                        cprint("{0}, reallocated to {1}" .format(
                             person["name"], new_room["name"]))
                     else:
-                        Print("No available rooms.")
+                        cprint("No available rooms.")
 
         # if room is living space
         else:
@@ -353,7 +338,7 @@ class Amity(object):
                                 new_room["name"]] = [person]
                         self.living_space_allocations[
                             current_living_space["name"]].remove(person)
-                        print("{0}, reallocated to {1}" .format(
+                        cprint("{0}, reallocated to {1}" .format(
                             person["name"], new_room["name"]))
                     else:
                         error_message = "N/A"
@@ -369,10 +354,10 @@ class Amity(object):
 
                             self.living_space_allocations[
                                 current_living_space["name"]].remove(person)
-                            print(
+                            cprint(
                                 "{0}, reallocated to {1}" .format(person["name"], new_room["name"]))
                         else:
-                            Print("No available rooms.")
+                            cprint("No available rooms.")
 
                 else:
                     if new_room["max_members"] > new_room["no_of_members"]:
@@ -382,7 +367,7 @@ class Amity(object):
                         else:
                             self.living_space_allocations[
                                 new_room["name"]] = [person]
-                        print(
+                        cprint(
                             "{0}, allocated to {1}" .format(person["name"], new_room["name"]))
                     else:
                         error_message = "N/A"
@@ -396,12 +381,12 @@ class Amity(object):
                                 self.living_space_allocations[
                                     new_room["name"]] = [person]
 
-                            print(
+                            cprint(
                                 "{0}, reallocated to {1}" .format(person["name"], new_room["name"]))
                         else:
-                            Print("No available rooms.")
+                            cprint("No available rooms.")
             else:
-                print(
+                cprint(
                     "You are trying to allocate staff living space. Staff cannot get living space.")
 
     def load_people(self, text_file):
@@ -416,7 +401,7 @@ class Amity(object):
                 elif len(person) == 3:
                     self.add_person(person[0], person[1], person[2])
                 else:
-                    print(
+                    cprint(
                         "Please check the text file, some values are missing.")
 
   
@@ -425,17 +410,17 @@ class Amity(object):
             specifying file name saves allocations to the specified file."""
         args = list(args)
         if len(args) == 0:
-            print("OFFICE ALLOCATIONS")
+            cprint("OFFICE ALLOCATIONS", 'yellow')
             for room, people in self.office_allocations.items():
-                print(room.upper())
+                cprint(room.upper())
                 for person in people:
-                    print(person["person_id"], person["name"])
+                    cprint("{0}, {1}".format(person["person_id"], person["name"]), 'yellow')
             # print living space and people in the living space
-            print("LIVING SPACES")
+            cprint("LIVING SPACES", 'yellow')
             for room, people in self.living_space_allocations.items():
-                print(room.upper())
+                cprint(room.upper())
                 for person in people:
-                    print(person["person_id"], person["name"])
+                    cprint("{0}, {1}".format(person["person_id"], person["name"]), 'yellow')
         elif len(args) == 1:
             for arg in args:
                 textfile = str(arg)+".txt"
@@ -459,9 +444,9 @@ class Amity(object):
                         f.write(
                             "\t\t{0}, {1}\n" .format(person["person_id"], person["name"]))
                 f.close()
-                print("allocations saved into: {0}" .format(textfile))
+                cprint("allocations saved into: {0}" .format(textfile), 'blue')
         else:
-            print("Please input corrent name of textfile eg: allocations")
+            cprint("Please input corrent name of textfile eg: allocations", 'red')
 
     def print_unallocated(self, *args):
         """Prints people that have not been allocated to rooms.
@@ -473,22 +458,22 @@ class Amity(object):
         allocated_people = []
         allocated_fellows = []
         if len(args) == 0:
-            print("PEOPLE WITH NO OFFICES")
+            cprint("PEOPLE WITH NO OFFICES",'yellow')
             for room, people in self.office_allocations.items():
                 for person in people:
                     allocated_people.append(person)
             for person in all_people:
                 if person not in allocated_people:
-                    print(person["person_id"], person["name"])
+                    cprint("{0}, {1}".format(person["person_id"], person["name"]), 'yellow')
             #Fellows with no living space
 
-            print("FELLOWS WITH NO LIVING SPACE:")
+            cprint("FELLOWS WITH NO LIVING SPACE:", 'yellow')
             for room, people in self.living_space_allocations.items():
                 for person in people:
                     allocated_fellows.append(person)
             for fellow in self.fellows:
                 if fellow not in allocated_fellows:
-                    print(fellow["person_id"], fellow["name"])
+                    cprint("{0}, {1}".format(fellow["person_id"], fellow["name"]), 'yellow')
 
         elif len(args) == 1:
             for arg in args:
@@ -511,9 +496,9 @@ class Amity(object):
                     if fellow not in allocated_fellows:
                         f.write(
                             "\t{0}, {1}\n".format(fellow["person_id"], fellow["name"]))
-            print("unallocated people saved to {0}" .format(text_file))
+            cprint("unallocated people saved to {0}" .format(text_file), 'blue')
         else:
-            print("Please input valid text file: eg unallocated")
+            cprint("Please input valid text file: eg unallocated", 'red')
 
     
     def print_room(self, room_name):
@@ -528,22 +513,23 @@ class Amity(object):
                 all_rooms.append(room["name"])
             if room_name in all_rooms:
                 if room_name in allocated_office_names:
-                    print(room_name.upper())
+                    cprint("{0}".format(room_name.upper()), 'yellow')
                     occupants = self.office_allocations.get(room_name)
                     for occupant in occupants:
-                        print(occupant["person_id"], occupant["name"])
+                        cprint ("person id   name", 'yellow')
+                        cprint("{0}  {1}".format(occupant["person_id"], occupant["name"]))
                 elif room_name in allocated_living_space_names:
-                    print(room_name.upper())
+                    cprint("{0}".format(room_name.upper()))
                     occupants = self.living_space_allocations.get(room_name)
                     for occupant in occupants:
-                        print(occupant["person_id"], occupant["name"])
+                        cprint("{0} {1}".format(occupant["person_id"], occupant["name"]))
                 else:
-                    print(room_name)
-                    print("Room is currently vacant.")
+                    cprint("{0}".format(room_name), 'yellow')
+                    cprint("Room is currently vacant.")
             else:
-                print("Room does not exist.")
+                cprint("Room does not exist.")
         else:
-            print("Please enter valid room name.")
+            cprint("Please enter valid room name.")
 
     def save_state(self, args):
         """Saves the data generated by amity to an sqlite database. The database name is specified by the user. """
@@ -681,32 +667,32 @@ class Amity(object):
             all_ids.append(person["person_id"])
 
         self.people_counter = max(all_ids)
-        print("Data reloaded to Amity")
+        cprint("Data reloaded to Amity")
 
         conn.close()
 
 
     def list_fellows(self):
         """Prints all fellows"""
-        print("person id     fellow")
+        cprint("person id   fellow")
         for person in self.fellows:
-            print(person["person_id"], person["name"])
+            cprint("{0} {1} ".format(person["person_id"], person["name"]), "yellow")
 
     def list_staff(self):
         """Prints all staff."""
-        print("person id  staff")
+        cprint("person id  staff")
         for person in self.staff:
-            print(person["person_id"], person["name"])
+            cprint("{0} {1} ".format(person["person_id"], person["name"]), "yellow")
 
     def list_offices(self):
         """Prints all offices"""
         for office in self.offices:
-            print("office name : {0} , no_of_members: {1}" .format(office["name"], office["no_of_members"]))
+            cprint("office name : {0} , no_of_members: {1}" .format(office["name"], office["no_of_members"]), 'yellow')
 
     def list_living_spaces(self):
         """Prints all living spaces."""
         for room in self.living_spaces:
-            print("Room name: {0} , No_of_members: {1}" .format(room["name"], room["no_of_members"]))
+            cprint("Room name: {0} , No_of_members: {1}" .format(room["name"], room["no_of_members"]), 'yellow')
 
     def delete_person(self, person_id):
         """Deletes a person given their id."""
@@ -736,14 +722,14 @@ class Amity(object):
             self.offices.remove(this_room)
             if room_name in all_allocated_offices:
                 del self.office_allocations[room_name]
-                print("Office was not vacant please reallocate people previously in office")
+                cprint("Office was not vacant please reallocate people previously in office", 'red')
             else:
-                print("Office was vacant")
+                cprint("Office was vacant")
         else:
             self.living_spaces.remove(this_room)
             if room_name in all_allocated_living_spaces:
                 del self.living_space_allocations[room_name]
-                print("Living space was not vacant please reallocate people previously in living space")
+                cprint("Living space was not vacant please reallocate people previously in living space", 'red')
             else:
-                print("Living Space was empty.")
+                cprint("Living Space was empty.", 'red')
 

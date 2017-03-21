@@ -6,7 +6,7 @@ interactive command application.
 Usage:
     amity create_room (office | living_space ) <name>...
     amity add_person <firstname> <lastname> <role> [<wants_accomodation>]
-    amity reallocate_room <person_id> <room_name>
+    amity reallocate_person <person_id> <room_name>
     amity load_people <filename>
     amity print_allocations [-o <filename>]
     amity print_unallocated [-o <filename>]
@@ -51,7 +51,7 @@ def docopt_cmd(func):
             # The DocoptExit is thrown when the args do not match.
             # We print a message to the user and the usage block.
 
-            print('Invalid Command!')
+            cprint('Invalid Command!.', 'red')
             print(e)
             return
 
@@ -90,8 +90,10 @@ class MyInteractive (cmd.Cmd):
         cprint("7. list_staff", 'yellow')
         cprint("8. list_offices", 'yellow')
         cprint("9. list_living_spaces", 'yellow')
-        cprint("9. delete_person <person_id>", 'yellow')
-        cprint("9. delete_room <room_name>", 'yellow')
+        cprint("10. delete_person <person_id>", 'yellow')
+        cprint("11. delete_room <room_name>", 'yellow')
+        cprint("12. save_state [--db <dbname>]", 'yellow')
+        cprint("13. load_state <dbfile>", 'yellow')
 
         cprint("\n")
         cprint("OTHER COMMANDS:".center(20), 'yellow')
@@ -107,27 +109,30 @@ class MyInteractive (cmd.Cmd):
 
     @docopt_cmd
     def do_create_room(self, arg):
-        """Usage: create_room (office | living_space ) <name>... """
+      """Usage: create_room (office | living_space ) <name>... """
+      if arg['living_space']:
+       self.amity.create_room("living_space", arg['<name>'])
+      else:
+         self.amity.create_room("office", arg['<name>'])
 
-        if arg['office']:
-          self.amity.create_room("office", arg['<name>'])
-        elif arg['living_space']:
-          self.amity.create_room("living_space", arg['<name>'])
-        else:
-          print("please input valid room type")
+    
 
     @docopt_cmd
     def do_add_person(self, arg):
       """Usage: add_person <firstname> <lastname> <role> [<wants_accomodation>]"""
-      if arg['<wants_accomodation>']:
-        self.amity.add_person(arg['<firstname>'], arg['<lastname>'], arg['<role>'], arg['<wants_accomodation>'])
+
+      if arg['<firstname>'].isalpha() and arg['<lastname>'].isalpha():
+        if arg['<wants_accomodation>']:
+          self.amity.add_person(arg['<firstname>'], arg['<lastname>'], arg['<role>'], arg['<wants_accomodation>'])
+        else:
+          self.amity.add_person(arg['<firstname>'], arg['<lastname>'], arg['<role>'])
       else:
-        self.amity.add_person(arg['<firstname>'], arg['<lastname>'], arg['<role>'])
+        cprint("Please enter valid person names.", 'red')
 
     @docopt_cmd
-    def do_reallocate_room(self, arg):
+    def do_reallocate_person(self, arg):
       """Usage: reallocate_room <person_id> <room_name>"""
-      self.amity.reallocate_room(arg['<person_id>'], arg['<room_name>'])
+      self.amity.reallocate_person(arg['<person_id>'], arg['<room_name>'])
 
     @docopt_cmd
     def do_load_people(self,arg):
@@ -160,9 +165,10 @@ class MyInteractive (cmd.Cmd):
       """Usage: save_state [--db <dbname>]"""
       if arg['<dbname>']:
         self.amity.save_state(arg['<dbname>'])
+        cprint("Data saved to {0}.db ".format(arg['<dbname>']), 'blue')
       else:
         self.amity.save_state("amitydb")
-        cprint("Data automatically saved to amitydb")
+        cprint("Data automatically saved to amitydb", 'blue')
 
     @docopt_cmd
     def do_load_state(self, arg):
@@ -207,7 +213,7 @@ class MyInteractive (cmd.Cmd):
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""
 
-        print('Good Bye!')
+        cprint('Good Bye!', 'blue')
         exit()
 
 opt = docopt(__doc__, sys.argv[1:])

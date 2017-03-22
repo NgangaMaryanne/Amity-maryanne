@@ -33,9 +33,9 @@ Options:
 import sys
 import cmd
 from docopt import docopt, DocoptExit
-from amity import Amity
 from termcolor import cprint
 from pyfiglet import figlet_format
+from amity import Amity
 
 
 def docopt_cmd(func):
@@ -72,8 +72,9 @@ def docopt_cmd(func):
 class MyInteractive (cmd.Cmd):
 
     cprint("\n")
-    cprint(figlet_format("AMITY".center(10), font="block"),
+    cprint(figlet_format("MARS".center(10), font="block"),
            "blue", attrs=["bold"])
+    cprint("Maryanne Amity Room Allocation System", 'yellow')
     def introduction():
         cprint("\n")
         cprint("ROOM ALLOCATION COMMANDS:".center(30), 'yellow')
@@ -167,7 +168,7 @@ class MyInteractive (cmd.Cmd):
         self.amity.save_state(arg['<dbname>'])
         cprint("Data saved to {0}.db ".format(arg['<dbname>']), 'blue')
       else:
-        self.amity.save_state("amitydb")
+        self.amity_database.save_state("amitydb")
         cprint("Data automatically saved to amitydb", 'blue')
 
     @docopt_cmd

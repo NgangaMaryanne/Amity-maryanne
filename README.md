@@ -6,19 +6,20 @@ Every member of Amity can get an office. A fellow can decide whether they want a
 a member of staff cannot get a living space. 
 ## INSTALLATION
 * Create Virtual Environment
-You will need to have virtualenvwrapper installed. Run command:
-_mkvirtualenv Amity_
-_workon Amity_
+You will need to have virtualenvwrapper installed. 
+Run command:
+```mkvirtualenv Amity```
+```workon Amity```
 * Install requirements
-_pip install -r requirements.txt_
+  ```pip install -r requirements.txt```
 * Run the amity script on interactive terminal.
   * Open your terminal 
   * Enter command:
-  _&python run.py -i_
+  ```python run.py -i```
 * Interact with Amity by issuing Amity commands discussed below.
 
 ## AMITY COMMANDS.
-Upon running the _$python run.py -i_ command, the screen below appears.
+Upon running the `python run.py -i` command, the screen below appears.
 It contains all Amity commands and the arguments required by each command.
 
 ![](amity_welcome.png)

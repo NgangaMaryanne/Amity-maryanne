@@ -15,8 +15,7 @@ Usage:
     amity print_room <room_name>
     amity list_fellows
     amity list_staff
-    amity list_offices
-    amity list_living_spaces
+    amity list_rooms
     amity delete_person <person_id>
     amity delete_room <room_name>
     amity (-i | --interactive)
@@ -33,9 +32,9 @@ Options:
 import sys
 import cmd
 from docopt import docopt, DocoptExit
-from amity import Amity
 from termcolor import cprint
 from pyfiglet import figlet_format
+from amity import Amity
 
 
 def docopt_cmd(func):
@@ -74,26 +73,29 @@ class MyInteractive (cmd.Cmd):
     cprint("\n")
     cprint(figlet_format("AMITY".center(10), font="block"),
            "blue", attrs=["bold"])
+    cprint("ROOM ALLOCATION SYSTEM", 'blue')
     def introduction():
         cprint("\n")
-        cprint("ROOM ALLOCATION COMMANDS:".center(30), 'yellow')
+        cprint("AMITY COMMANDS:".center(30), 'yellow')
         cprint("\n")
         cprint(
             "1. create_room (office | living_space ) <name>...", 'yellow')
         cprint(
             "2. add_person <first_name> <last_name> (Fellow|Staff)"
             "[<wants_accomodation>]".center(40), 'yellow')
-        cprint("3. reallocate_room <person_id> <room_name>".center(40), 'yellow')
+        cprint("3. reallocate_room <person_id> <room_name>".center(40),
+               'yellow')
         cprint("4. load_people <filename>", 'yellow')
-        cprint("5. print_room <room_name>", 'yellow')
-        cprint("6. list_fellows", 'yellow')
-        cprint("7. list_staff", 'yellow')
-        cprint("8. list_offices", 'yellow')
-        cprint("9. list_living_spaces", 'yellow')
-        cprint("10. delete_person <person_id>", 'yellow')
-        cprint("11. delete_room <room_name>", 'yellow')
-        cprint("12. save_state [--db <dbname>]", 'yellow')
-        cprint("13. load_state <dbfile>", 'yellow')
+        cprint("5. print_allocations [ -o <filename>]", 'yellow')
+        cprint("6. print_unallocated [-o <filename>]", 'yellow')
+        cprint("7. print_room <room_name>", 'yellow')
+        cprint("8. list_fellows", 'yellow')
+        cprint("9. list_staff", 'yellow')
+        cprint("10. list_rooms", 'yellow')
+        cprint("11. delete_person <person_id>", 'yellow')
+        cprint("12. delete_room <room_name>", 'yellow')
+        cprint("13. save_state [--db <dbname>]", 'yellow')
+        cprint("14. load_state <dbfile>", 'yellow')
 
         cprint("\n")
         cprint("OTHER COMMANDS:".center(20), 'yellow')
@@ -187,9 +189,9 @@ class MyInteractive (cmd.Cmd):
       self.amity.list_staff()
 
     @docopt_cmd
-    def do_list_offices(self, arg):
-      """Usage: list_offices"""
-      self.amity.list_offices()
+    def do_list_rooms(self, arg):
+      """Usage: list_rooms"""
+      self.amity.list_rooms()
 
     @docopt_cmd
     def do_list_living_spaces(self, arg):

@@ -20,7 +20,8 @@ _pip install -r requirements.txt_
 ## AMITY COMMANDS.
 Upon running the _$python run.py -i_ command, the screen below appears.
 It contains all Amity commands and the arguments required by each command.
-![alt text][amity_welcome.png]
+
+![](amity_welcome.png)
 ## SAMPLE USAGE
 Watch video below for a clearer picture of interacting with Amity.
 

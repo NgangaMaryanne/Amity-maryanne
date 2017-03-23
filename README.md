@@ -16,6 +16,7 @@ Run command:
 * Run the amity script on interactive terminal.
   * Open your terminal 
   * Enter command:
+  
   ```python run.py -i```
 * Interact with Amity by issuing Amity commands discussed below.
 

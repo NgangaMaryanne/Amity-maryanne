@@ -5,6 +5,10 @@ Amity rooms could be offices or living spaces.
 Every member of Amity can get an office. A fellow can decide whether they want a living space but 
 a member of staff cannot get a living space. 
 ## INSTALLATION
+* Clone repository
+
+   ```git@github.com:NgangaMaryanne/Amity-maryanne.git```
+
 * Create Virtual Environment
 You will need to have virtualenvwrapper installed. 
 Run command:

@@ -7,7 +7,7 @@ a member of staff cannot get a living space.
 ## INSTALLATION
 * Clone repository
 
-```git@github.com:NgangaMaryanne/Amity-maryanne.git```
+ ```git@github.com:NgangaMaryanne/Amity-maryanne.git```
 
 * Create Virtual Environment
 You will need to have virtualenvwrapper installed. 

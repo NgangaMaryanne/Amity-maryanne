@@ -11,6 +11,7 @@ Run command:
 ```mkvirtualenv Amity```
 ```workon Amity```
 * Install requirements
+
   ```pip install -r requirements.txt```
 * Run the amity script on interactive terminal.
   * Open your terminal 

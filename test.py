@@ -113,25 +113,21 @@ class AmityTest(unittest.TestCase):
 
     def test_print_existent_room(self):
         self.assertEqual(self.amity.print_room("emerald"), "Success")
+        
+    def test_save_state(self):
+        self.assertEqual(self.amity.save_state("testamity"), "Success." )
+
+    def test_load_state(self):
+        self.assertEqual(self.amity.load_state("testamity"), "Success.")
 
     @mock.patch('amity_database.sqlite3')
     def test_connection_to_db_file(self, mock_db_call):
         AmityDatabase('a_db_file')
         mock_db_call.connect.assert_called_with('a_db_file')
 
-    
-
-
-
-
-
-
-         
-
    
-
     def tearDown(self):
-        self.amity
+      pass
 
 
 

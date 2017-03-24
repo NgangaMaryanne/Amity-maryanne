@@ -35,7 +35,6 @@ class Amity(object):
                     person_id = self.people_counter
                     if role in ("fellow", "f", "F", "Fellow"):
                         fellow = Fellow(person_id, name)
-                        person = Person(person_id, name, "fellow")
                         self.people.append(fellow.__dict__)
                         cprint("{0} created" .format(fellow.name), 'blue')
                         self.allocate_office(fellow.person_id)
@@ -346,8 +345,10 @@ class Amity(object):
                     if people != []:
                         cprint("{0}".format(room.upper()), 'yellow')
                         for person in people:
-                            all_people.append([person["person_id"], person["name"]])
-                        print(tabulate(all_people, headers = ['person id', 'name'], 
+                            all_people.append([person["person_id"], 
+                                               person["name"]])
+                        print(tabulate(all_people, headers = ['person id', 
+                                                              'name'], 
                                    tablefmt = 'orgtbl'))
                 # print living space and people in the living space
                 cprint("LIVING SPACES", 'blue')
@@ -356,8 +357,10 @@ class Amity(object):
                     if people != []:
                         cprint("{0}".format(room.upper()), 'yellow')
                         for person in people:
-                            all_people.append([person["person_id"], person["name"]])
-                        print(tabulate(all_people, headers = ["person id", "name"], 
+                            all_people.append([person["person_id"], 
+                                               person["name"]])
+                        print(tabulate(all_people, headers = ["person id", 
+                                                              "name"], 
                                         tablefmt = 'orgtbl'))
 
             elif len(args) == 1:
@@ -384,10 +387,12 @@ class Amity(object):
                                 "\t\t{0}, {1}\n" .format(person["person_id"],
                                                          person["name"]))
                     f.close()
-                    cprint("allocations saved into: {0}" .format(textfile), 'blue')
+                    cprint("allocations saved into: {0}" .format(textfile), 
+                           'blue')
             else:
                 cprint(
-                    "Please input corrent name of textfile eg: allocations", 'red')
+                    "Please input corrent name of textfile eg: allocations", 
+                    'red')
             return "Success"
         except():
             cprint("Error printing allocations.", 'red')
@@ -402,7 +407,6 @@ class Amity(object):
             allocated_people = []
             allocated_fellows = []
             if len(args) == 0:
-                cprint("PEOPLE WITH NO OFFICES", 'blue')
                 no_office_people = []
                 for room, people in self.office_allocations.items():
                     for person in people:
@@ -411,21 +415,26 @@ class Amity(object):
                     if person not in allocated_people:
                         no_office_people.append([person["person_id"], 
                                                  person["name"]])
-                print(tabulate(no_office_people, headers = ["person_id", "name"], 
-                                tablefmt = 'orgtbl'))
+                if no_office_people !=[]:
+                    cprint("PEOPLE WITH NO OFFICES", 'blue')
+                    print(tabulate(no_office_people, headers = ["person_id", 
+                                                                "name"], 
+                                    tablefmt = 'orgtbl'))
                 # Fellows with no living space
-                cprint("FELLOWS WITH NO LIVING SPACE:", 'blue')
                 unallocated_fellows = []
                 for room, people in self.living_space_allocations.items():
                     for person in people:
                         allocated_fellows.append(person)
                 for person in self.people:
-                    if person not in allocated_fellows and person["role"] == "fellow":
+                    if person not in allocated_fellows and person["role"] == \
+                    "fellow":
                         unallocated_fellows.append([person["person_id"], 
                                                     person["name"]])
-                print(tabulate(unallocated_fellows, headers = ['person id', 
-                                                               'name'], 
-                            tablefmt = 'orgtbl'))
+                if unallocated_fellows != []:
+                    cprint("FELLOWS WITH NO LIVING SPACE:", 'blue')
+                    print(tabulate(unallocated_fellows, headers = ['person id', 
+                                                                   'name'], 
+                                tablefmt = 'orgtbl'))
 
             elif len(args) == 1:
                 for arg in args:
@@ -451,7 +460,8 @@ class Amity(object):
                                 "\t{0}, {1}\n".format(fellow["person_id"],
                                                       fellow["name"]))
                 cprint(
-                    "unallocated people saved to {0}" .format(text_file), 'blue')
+                    "unallocated people saved to {0}" .format(text_file), 
+                    'blue')
             else:
                 cprint("Please input valid text file: eg unallocated", 'red')
             return "Success"
@@ -464,7 +474,8 @@ class Amity(object):
         try:
             if isinstance(room_name, str):
                 all_rooms = []
-                allocated_office_names = [room for room in self.office_allocations]
+                allocated_office_names = [room for room in 
+                self.office_allocations]
                 allocated_living_space_names = [
                     room for room in self.living_space_allocations]
                 for room in self.offices:
@@ -618,6 +629,7 @@ class Amity(object):
                                                     person["person_id"])
             amity_database.commit()
             amity_database.close()
+            return "Success."
         except():
             cprint("Could not connect to database.")
 
@@ -691,7 +703,8 @@ class Amity(object):
                 for person in self.people:
                     all_ids.append(person["person_id"])
 
-                self.people_counter = max(all_ids)  
+                self.people_counter = max(all_ids)
+            return "Success."  
         except():
             cprint("Could not connect to database.")
 

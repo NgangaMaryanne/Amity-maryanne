@@ -117,8 +117,18 @@ class AmityTest(unittest.TestCase):
     @mock.patch('amity_database.sqlite3')
     def test_connection_to_db_file(self, mock_db_call):
         AmityDatabase('a_db_file')
-        mock_db_call.connect.assert_called_with('a_db_file')  
+        mock_db_call.connect.assert_called_with('a_db_file')
 
+    
+
+
+
+
+
+
+         
+
+   
 
     def tearDown(self):
         self.amity

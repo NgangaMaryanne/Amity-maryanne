@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/NgangaMaryanne/Amity-maryanne.svg?branch=develop)](https://travis-ci.org/NgangaMaryanne/Amity-maryanne)
 # AMITY-MARYANNE 
 Amity is a room allocation system for one of Andela's facilities. 
 The system allows you to create rooms in Amity, Add people to Amity, allocate the added people to rooms in Amity. 
@@ -5,6 +6,10 @@ Amity rooms could be offices or living spaces.
 Every member of Amity can get an office. A fellow can decide whether they want a living space but 
 a member of staff cannot get a living space. 
 ## INSTALLATION
+* Clone repository
+
+   ```git@github.com:NgangaMaryanne/Amity-maryanne.git```
+
 * Create Virtual Environment
 You will need to have virtualenvwrapper installed. 
 Run command:

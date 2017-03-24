@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/NgangaMaryanne/Amity-maryanne.svg?branch=develop)](https://travis-ci.org/NgangaMaryanne/Amity-maryanne)
-[![Coverage Status](https://coveralls.io/repos/github/NgangaMaryanne/Amity-maryanne/badge.svg?branch=develop)](https://coveralls.io/github/NgangaMaryanne/Amity-maryanne?branch=develop)
 # AMITY-MARYANNE 
 Amity is a room allocation system for one of Andela's facilities. 
 The system allows you to create rooms in Amity, Add people to Amity, allocate the added people to rooms in Amity. 

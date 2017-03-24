@@ -119,23 +119,8 @@ class AmityTest(unittest.TestCase):
         AmityDatabase('a_db_file')
         mock_db_call.connect.assert_called_with('a_db_file')
 
-    
-
-
-
-
-
-
-         
-
-   
-
     def tearDown(self):
         self.amity
-
-
-
-
 
 if __name__ == '__main__':
     unittest.main()
